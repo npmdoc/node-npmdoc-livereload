@@ -1,0 +1,264 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/napcs/node-livereload#readme">livereload (v0.6.2)</a>
+</h1>
+<h4>LiveReload server</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.livereload">module livereload</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.livereload.createServer">
+            function <span class="apidocSignatureSpan">livereload.</span>createServer
+            <span class="apidocSignatureSpan">(config, callback)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">livereload.</span>command</span>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.livereload.command">module livereload.command</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.livereload.command.run">
+            function <span class="apidocSignatureSpan">livereload.command.</span>run
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.livereload" id="apidoc.module.livereload">module livereload</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.livereload.createServer" id="apidoc.element.livereload.createServer">
+        function <span class="apidocSignatureSpan">livereload.</span>createServer
+        <span class="apidocSignatureSpan">(config, callback)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">createServer = function (config, callback) {
+  var app, requestHandler, server;
+  if (config == null) {
+    config = {};
+  }
+  requestHandler = function(req, res) {
+    if (url.parse(req.url).pathname === '/livereload.js') {
+      res.writeHead(200, {
+        'Content-Type': 'text/javascript'
+      });
+      return res.end(fs.readFileSync(__dirname + '/../ext/livereload.js'));
+    }
+  };
+  if (config.https == null) {
+    app = http.createServer(requestHandler);
+  } else {
+    app = https.createServer(config.https, requestHandler);
+  }
+  if (config.server == null) {
+    config.server = app;
+  }
+  server = new Server(config);
+  if (!config.noListen) {
+    server.listen(callback);
+  }
+  return server;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+$ npm install livereload
+```
+
+Then, create a server and fire it up.
+
+```js
+var livereload = require('livereload');
+var server = livereload.<span class="apidocCodeKeywordSpan">createServer</span>();
+server.watch(__dirname + "/public");
+```
+
+You can also use this with a Connect server. Here's an example of a simple server
+using `connect` and a few other modules just to give you an idea:
+
+```js
+...</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.livereload.command" id="apidoc.module.livereload.command">module livereload.command</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.livereload.command.run" id="apidoc.element.livereload.command.run">
+        function <span class="apidocSignatureSpan">livereload.command.</span>run
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">run = function () {
+  var debug, exclusions, exts, livereload, opts, path, pjson, port, resolve, server, usePolling, version, wait;
+  pjson = require('../package.json');
+  version = pjson.version;
+  livereload = require('./livereload');
+  resolve = require('path').resolve;
+  opts = require('opts');
+  debug = false;
+  opts.parse([
+    {
+      short: "v",
+      long: "version",
+      description: "Show the version",
+      required: false,
+      callback: function() {
+        console.log(version);
+        return process.exit(1);
+      }
+    }, {
+      short: "p",
+      long: "port",
+      description: "Specify the port",
+      value: true,
+      required: false
+    }, {
+      short: "x",
+      long: "exclusions",
+      description: "Exclude files by specifying an array of regular expressions. Will be appended to default value which is [/\.
+git\//, /\.svn\//, /\.hg\//]",
+      required: false,
+      value: true
+    }, {
+      short: "d",
+      long: "debug",
+      description: "Additional debugging information",
+      required: false,
+      callback: function() {
+        return debug = true;
+      }
+    }, {
+      short: "e",
+      long: "exts",
+      description: "An array of extensions you want to observe. An example 'jade scss' (quotes are required). In addition to the
+ defaults (html, css, js, png, gif, jpg, php, php5, py, rb, erb, and\"coffee.\").",
+      required: false,
+      value: true
+    }, {
+      short: "u",
+      long: "usepolling",
+      description: "Poll for file system changes. Set this to true to successfully watch files over a network.",
+      required: false,
+      value: true
+    }, {
+      short: "w",
+      long: "wait",
+      description: "delay message of file system changes to browser by `delay` milliseconds",
+      required: false,
+      value: true
+    }
+  ].reverse(), true);
+  port = opts.get('port') || 35729;
+  exclusions = opts.get('exclusions') ? opts.get('exclusions').split(',').map(function(s) {
+    return new RegExp(s);
+  }) : [];
+  exts = opts.get('exts') ? opts.get('exts').split(',') : [];
+  usePolling = opts.get('usepolling') || false;
+  wait = opts.get('wait') || 0;
+  server = livereload.createServer({
+    port: port,
+    debug: debug,
+    exclusions: exclusions,
+    exts: exts,
+    usePolling: usePolling,
+    delay: wait
+  });
+  path = (process.argv[2] || '.').split(/\s*,\s*/).map(function(x) {
+    return resolve(x);
+  });
+  console.log("Starting LiveReload v" + version + " for " + path + " on port " + port + ".");
+  return server.watch(path);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+
+
+
+
+
+#!/usr/bin/env node
+require('../lib/command').<span class="apidocCodeKeywordSpan">run</span>();
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
